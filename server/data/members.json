@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Muhammad Salman Fahri",
+    "npm": "2406343514",
+    "email": "muhsalman.fahri@gmail.com",
+    "role": "Ketua Kelompok",
+    "jurusan": "Sistem Informasi",
+    "angkatan": "2024",
+    "photo": null
+  },
+  {
+    "name": "Zhafira Cellonada Destrata Wijayanto",
+    "npm": "2406495842",
+    "email": "anggota2@gmail.com",
+    "role": "Anggota",
+    "jurusan": "Sistem Informasi",
+    "angkatan": "2024",
+    "photo": null
+  },
+  {
+    "name": "Ainur Fadhil",
+    "npm": "2406360312",
+    "email": "ainurfadhil32@gmail.com",
+    "role": "Anggota",
+    "jurusan": "Ilmu Komputer",
+    "angkatan": "2024",
+    "photo": null
+  },
+  {
+    "name": "Yafi Alifuddin ",
+    "npm": "2406437155",
+    "email": "yalif1710@gmail.com",
+    "role": "Anggota",
+    "jurusan": "Ilmu Komputer",
+    "angkatan": "2024",
+    "photo": null
+  },
+  {
+    "name": "Izzati Maharani Yusmananda ",
+    "npm": "2406361675",
+    "email": "izzati.mhr@gmail.com",
+    "role": "Anggota",
+    "jurusan": "Sistem Informasi",
+    "angkatan": "2024",
+    "photo": null
+  }
+]
