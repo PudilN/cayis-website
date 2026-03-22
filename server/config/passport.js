@@ -14,7 +14,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.SERVER_URL}/auth/google/callback`,
+      callbackURL: `${process.env.CLIENT_URL || 'http://localhost:5173'}/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
       // Extract user info from Google profile

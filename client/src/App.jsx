@@ -6,15 +6,13 @@ import BiodataCard from './components/BiodataCard';
 import ThemeCustomizer from './components/ThemeCustomizer';
 import './App.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 function AppContent() {
   const { user, isAuthenticated } = useAuth();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/members`)
+    fetch(`/api/members`)
       .then((res) => res.json())
       .then((data) => setMembers(data))
       .catch((err) => console.error('Failed to fetch members:', err))

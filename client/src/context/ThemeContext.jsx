@@ -2,8 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext(null);
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 const DEFAULT_THEME = {
   primaryColor: '#6C63FF',
   secondaryColor: '#3F3D56',
@@ -20,7 +18,7 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     // Fetch current theme on mount
-    fetch(`${API_URL}/api/theme`)
+    fetch(`/api/theme`)
       .then((res) => res.json())
       .then((data) => setTheme(data))
       .catch((err) => {
@@ -47,7 +45,7 @@ export function ThemeProvider({ children }) {
 
   const updateTheme = async (updates) => {
     try {
-      const res = await fetch(`${API_URL}/api/theme`, {
+      const res = await fetch(`/api/theme`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
