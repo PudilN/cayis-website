@@ -19,18 +19,18 @@ export default function BiodataCard({ member, index }) {
       <div className="card-content">
         <h3 className="card-name">{member.name}</h3>
         <span className="card-role">{member.role}</span>
-        
+
         <div className="card-info-grid">
           <div className="info-item">
-            <span className="info-label">ID / NPM</span>
+            <span className="info-label">NPM</span>
             <span className="info-value">{member.npm}</span>
           </div>
           <div className="info-item">
-            <span className="info-label">Major</span>
+            <span className="info-label">Jurusan</span>
             <span className="info-value">{member.jurusan}</span>
           </div>
           <div className="info-item">
-            <span className="info-label">Batch</span>
+            <span className="info-label">Angkatan</span>
             <span className="info-value">{member.angkatan}</span>
           </div>
         </div>

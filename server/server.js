@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
+const cookieSession = require('cookie-session');
 const cors = require('cors');
 const passport = require('./config/passport');
 const path = require('path');
@@ -27,17 +27,16 @@ app.use(
 
 app.use(express.json());
 
+// Gunakan cookie-session agar data session tersimpan di cookie.
+// Sangat penting untuk arsitektur serverless (Vercel).
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'fallback-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: isProduction,
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: isProduction ? 'none' : 'lax', // 'none' is required for cross-site cookies
-    },
+  cookieSession({
+    name: 'biodata-session',
+    keys: [process.env.SESSION_SECRET || 'fallback-secret'],
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: isProduction,
+    httpOnly: true,
+    sameSite: isProduction ? 'none' : 'lax',
   })
 );
 

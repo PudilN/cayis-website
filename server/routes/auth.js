@@ -26,11 +26,10 @@ router.get('/user', (req, res) => {
 router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) return res.status(500).json({ error: 'Logout failed' });
-    req.session.destroy((err) => {
-      if (err) return res.status(500).json({ error: 'Session destruction failed' });
-      res.clearCookie('connect.sid');
-      res.redirect(process.env.CLIENT_URL);
-    });
+    req.session = null;
+    res.clearCookie('biodata-session');
+    res.clearCookie('biodata-session.sig');
+    res.redirect(process.env.CLIENT_URL);
   });
 });
 
