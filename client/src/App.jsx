@@ -30,7 +30,7 @@ function AppContent() {
           <div className="hero-badge">PKPL</div>
           <h1 className="hero-title">Cayis Sang Penjaga.</h1>
           <p className="hero-subtitle">
-            Bhineka Tunggal Ika. Walaupun salman make, kita tetap satu.
+            Bhineka Tunggal Ika. Walaupun salman make, kita tetap satu jua.
           </p>
         </header>
 
