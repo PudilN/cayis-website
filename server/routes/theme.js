@@ -4,6 +4,8 @@ const path = require('path');
 const { isAuthenticated, isGroupMember } = require('../middleware/auth');
 
 const THEME_FILE = path.join(__dirname, '..', 'data', 'theme.json');
+// For Vercel, we can try using /tmp/theme.json if writing to original throws EROFS
+const TMP_THEME_FILE = '/tmp/theme.json';
 
 const VALID_PROPERTIES = {
   primaryColor: /^#[0-9A-Fa-f]{6}$/,
@@ -16,34 +18,53 @@ const VALID_PROPERTIES = {
   fontSize: /^(14|16|18|20)(px)?$/,
 };
 
+// Helper function to read the theme, checking /tmp first if on Vercel
+function readTheme() {
+  if (fs.existsSync(TMP_THEME_FILE)) {
+    return JSON.parse(fs.readFileSync(TMP_THEME_FILE, 'utf-8'));
+  }
+  return JSON.parse(fs.readFileSync(THEME_FILE, 'utf-8'));
+}
+
 // Get current theme
 router.get('/', (req, res) => {
   try {
-    const theme = JSON.parse(fs.readFileSync(THEME_FILE, 'utf-8'));
+    const theme = readTheme();
     res.json(theme);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to read theme data' });
+    res.status(500).json({ error: 'Failed to read theme data: ' + err.message });
   }
 });
 
 // Update theme (requires auth & group membership)
 router.put('/', isAuthenticated, isGroupMember, (req, res) => {
   try {
-    const currentTheme = JSON.parse(fs.readFileSync(THEME_FILE, 'utf-8'));
+    const currentTheme = readTheme();
     const updates = req.body;
 
     for (const [key, value] of Object.entries(updates)) {
       if (!VALID_PROPERTIES[key] || !VALID_PROPERTIES[key].test(String(value))) {
-        return res.status(400).json({ error: `Invalid value for ${key}` });
+        return res.status(400).json({ error: `Invalid value for ${key}: ${value}` });
       }
     }
 
     const newTheme = { ...currentTheme, ...updates };
-    fs.writeFileSync(THEME_FILE, JSON.stringify(newTheme, null, 2));
+    
+    // Try writing to normal file, if it fails (EROFS on Vercel), write to /tmp
+    try {
+      fs.writeFileSync(THEME_FILE, JSON.stringify(newTheme, null, 2));
+    } catch (writeErr) {
+      if (writeErr.code === 'EROFS' || process.env.VERCEL) {
+        fs.writeFileSync(TMP_THEME_FILE, JSON.stringify(newTheme, null, 2));
+      } else {
+        throw writeErr;
+      }
+    }
 
     res.json(newTheme);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update theme' });
+    console.error("Theme Update Error:", err);
+    res.status(500).json({ error: 'Failed to update theme: ' + err.message });
   }
 });
 
