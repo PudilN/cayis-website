@@ -40,6 +40,22 @@ app.use(
   })
 );
 
+// Polyfill untuk req.session.regenerate & save karena Passport 0.6.0+ membutuhkannya,
+// sedangkan cookie-session tidak memilikinya secara bawaan. Ini akan mencegah Error 500.
+app.use((req, res, next) => {
+  if (req.session && !req.session.regenerate) {
+    req.session.regenerate = (cb) => {
+      cb();
+    };
+  }
+  if (req.session && !req.session.save) {
+    req.session.save = (cb) => {
+      cb();
+    };
+  }
+  next();
+});
+
 app.use(passport.initialize());
 app.use(passport.session());
 
