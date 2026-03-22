@@ -11,6 +11,10 @@ const themeRoutes = require('./routes/theme');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Trust proxy is required for secure cookies behind Vercel's proxy
+app.set('trust proxy', 1);
 
 app.use(
   cors({
@@ -29,10 +33,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: isProduction,
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax', // 'none' is required for cross-site cookies
     },
   })
 );
