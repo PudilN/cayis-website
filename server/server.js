@@ -13,7 +13,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Trust proxy is required for secure cookies behind Vercel's proxy
 app.set('trust proxy', 1);
 
 app.use(
@@ -27,8 +26,6 @@ app.use(
 
 app.use(express.json());
 
-// Gunakan cookie-session agar data session tersimpan di cookie.
-// Sangat penting untuk arsitektur serverless (Vercel).
 app.use(
   cookieSession({
     name: 'biodata-session',
@@ -40,8 +37,7 @@ app.use(
   })
 );
 
-// Polyfill untuk req.session.regenerate & save karena Passport 0.6.0+ membutuhkannya,
-// sedangkan cookie-session tidak memilikinya secara bawaan. Ini akan mencegah Error 500.
+// Polyfill untuk passport
 app.use((req, res, next) => {
   if (req.session && !req.session.regenerate) {
     req.session.regenerate = (cb) => {

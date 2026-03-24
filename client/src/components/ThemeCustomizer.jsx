@@ -85,8 +85,6 @@ export default function ThemeCustomizer() {
   };
 
 
-
-  // Determine which preset is mostly active based on background
   const activePresetId = THEME_PRESETS.find(p => p.colors.backgroundColor === localTheme.backgroundColor)?.id;
 
   return (

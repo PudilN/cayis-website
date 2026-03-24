@@ -17,7 +17,7 @@ passport.use(
       callbackURL: `${process.env.CLIENT_URL || 'http://localhost:5173'}/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
-      // Extract user info from Google profile
+      // ambil profil google
       const user = {
         googleId: profile.id,
         displayName: profile.displayName,
@@ -25,7 +25,7 @@ passport.use(
         photo: profile.photos[0]?.value || null,
       };
 
-      // Check if user is a group member
+      // cek whitelist grup
       const allowedEmails = (process.env.ALLOWED_EMAILS || '')
         .split(',')
         .map((e) => e.trim().toLowerCase());

@@ -1,10 +1,10 @@
 {
-  "primaryColor": "#FFFFFF",
-  "secondaryColor": "#A0A0A0",
-  "backgroundColor": "#0A0A0A",
-  "cardColor": "#141414",
-  "textColor": "#EDEDED",
-  "accentColor": "#FFFFFF",
+  "primaryColor": "#000000",
+  "secondaryColor": "#666666",
+  "backgroundColor": "#FAFAFA",
+  "cardColor": "#FFFFFF",
+  "textColor": "#111111",
+  "accentColor": "#000000",
   "fontFamily": "Roboto",
   "fontSize": "20"
 }

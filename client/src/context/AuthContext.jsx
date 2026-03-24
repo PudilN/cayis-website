@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch current user on mount (automatically routed through Vercel/Vite Proxy)
     fetch(`/auth/user`, { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {

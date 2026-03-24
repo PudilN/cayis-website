@@ -4,7 +4,6 @@ const path = require('path');
 const { isAuthenticated, isGroupMember } = require('../middleware/auth');
 
 const THEME_FILE = path.join(__dirname, '..', 'data', 'theme.json');
-// For Vercel, we can try using /tmp/theme.json if writing to original throws EROFS
 const TMP_THEME_FILE = '/tmp/theme.json';
 
 const VALID_PROPERTIES = {
@@ -18,7 +17,6 @@ const VALID_PROPERTIES = {
   fontSize: /^(14|16|18|20)(px)?$/,
 };
 
-// Helper function to read the theme, checking /tmp first if on Vercel
 function readTheme() {
   if (fs.existsSync(TMP_THEME_FILE)) {
     return JSON.parse(fs.readFileSync(TMP_THEME_FILE, 'utf-8'));
@@ -26,7 +24,6 @@ function readTheme() {
   return JSON.parse(fs.readFileSync(THEME_FILE, 'utf-8'));
 }
 
-// Get current theme
 router.get('/', (req, res) => {
   try {
     const theme = readTheme();
@@ -36,7 +33,6 @@ router.get('/', (req, res) => {
   }
 });
 
-// Update theme (requires auth & group membership)
 router.put('/', isAuthenticated, isGroupMember, (req, res) => {
   try {
     const currentTheme = readTheme();
@@ -50,7 +46,7 @@ router.put('/', isAuthenticated, isGroupMember, (req, res) => {
 
     const newTheme = { ...currentTheme, ...updates };
     
-    // Try writing to normal file, if it fails (EROFS on Vercel), write to /tmp
+    // simpan tema
     try {
       fs.writeFileSync(THEME_FILE, JSON.stringify(newTheme, null, 2));
     } catch (writeErr) {

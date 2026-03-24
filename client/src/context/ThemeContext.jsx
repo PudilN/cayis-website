@@ -17,7 +17,6 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(DEFAULT_THEME);
 
   useEffect(() => {
-    // Fetch current theme on mount
     fetch(`/api/theme`)
       .then((res) => res.json())
       .then((data) => setTheme(data))
@@ -27,7 +26,6 @@ export function ThemeProvider({ children }) {
       });
   }, []);
 
-  // Apply theme as CSS custom properties
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--primary-color', theme.primaryColor);
@@ -38,7 +36,6 @@ export function ThemeProvider({ children }) {
     root.style.setProperty('--accent-color', theme.accentColor);
     root.style.setProperty('--font-family', theme.fontFamily);
     
-    // Safety check to prevent '14pxpx' issues from manual config edits
     const safeSizeString = String(theme.fontSize).replace('px', '');
     root.style.setProperty('--font-size', `${safeSizeString}px`);
   }, [theme]);
