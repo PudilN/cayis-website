@@ -1,7 +1,10 @@
 const router = require('express').Router();
+const fs = require('fs');
+const path = require('path');
 const { isAuthenticated, isGroupMember } = require('../middleware/auth');
-const mongoose = require('mongoose');
-const Theme = require('../models/Theme');
+
+const THEME_FILE = path.join(__dirname, '..', 'data', 'theme.json');
+const TMP_THEME_FILE = '/tmp/theme.json';
 
 const VALID_PROPERTIES = {
   primaryColor: /^#[0-9A-Fa-f]{6}$/,
@@ -14,35 +17,25 @@ const VALID_PROPERTIES = {
   fontSize: /^(14|16|18|20)(px)?$/,
 };
 
-const DEFAULT_THEME = {
-  primaryColor: "#000000",
-  secondaryColor: "#666666",
-  backgroundColor: "#FAFAFA",
-  cardColor: "#FFFFFF",
-  textColor: "#111111",
-  accentColor: "#000000",
-  fontFamily: "Roboto",
-  fontSize: "20"
-};
+function readTheme() {
+  if (fs.existsSync(TMP_THEME_FILE)) {
+    return JSON.parse(fs.readFileSync(TMP_THEME_FILE, 'utf-8'));
+  }
+  return JSON.parse(fs.readFileSync(THEME_FILE, 'utf-8'));
+}
 
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      return res.json(DEFAULT_THEME);
-    }
-
-    let theme = await Theme.findOne({});
-    if (!theme) {
-      theme = DEFAULT_THEME;
-    }
+    const theme = readTheme();
     res.json(theme);
   } catch (err) {
     res.status(500).json({ error: 'Failed to read theme data: ' + err.message });
   }
 });
 
-router.put('/', isAuthenticated, isGroupMember, async (req, res) => {
+router.put('/', isAuthenticated, isGroupMember, (req, res) => {
   try {
+    const currentTheme = readTheme();
     const updates = req.body;
 
     for (const [key, value] of Object.entries(updates)) {
@@ -51,19 +44,20 @@ router.put('/', isAuthenticated, isGroupMember, async (req, res) => {
       }
     }
 
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({ error: 'Database not connected. Theme updates are temporarily unavailable.' });
+    const newTheme = { ...currentTheme, ...updates };
+    
+    // simpan tema
+    try {
+      fs.writeFileSync(THEME_FILE, JSON.stringify(newTheme, null, 2));
+    } catch (writeErr) {
+      if (writeErr.code === 'EROFS' || process.env.VERCEL) {
+        fs.writeFileSync(TMP_THEME_FILE, JSON.stringify(newTheme, null, 2));
+      } else {
+        throw writeErr;
+      }
     }
 
-    let theme = await Theme.findOne({});
-    if (!theme) {
-      theme = new Theme(DEFAULT_THEME);
-    }
-
-    Object.assign(theme, updates);
-    await theme.save();
-
-    res.json(theme);
+    res.json(newTheme);
   } catch (err) {
     console.error("Theme Update Error:", err);
     res.status(500).json({ error: 'Failed to update theme: ' + err.message });

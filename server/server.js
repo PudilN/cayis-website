@@ -5,14 +5,6 @@ const cors = require('cors');
 const passport = require('./config/passport');
 const path = require('path');
 const fs = require('fs');
-const connectDB = require('./config/db');
-
-// Connect Database
-if (process.env.MONGO_URI) {
-  connectDB();
-} else {
-  console.warn("Warning: MONGO_URI is not set. Database features like global theme will fail.");
-}
 
 const authRoutes = require('./routes/auth');
 const themeRoutes = require('./routes/theme');
